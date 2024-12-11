@@ -10,6 +10,7 @@ class MessagebirdMessage
     public $reference;
     public $datacoding;
     public $reportUrl;
+    public $accessToken;
 
     public static function create($body = '')
     {
@@ -72,5 +73,10 @@ class MessagebirdMessage
     public function toJson()
     {
         return json_encode($this);
+    }
+
+    public function setAccessToken(string $accessToken): void
+    {
+        $this->accessToken = $accessToken;
     }
 }

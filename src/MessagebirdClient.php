@@ -30,6 +30,8 @@ class MessagebirdClient
      */
     public function send(MessagebirdMessage $message)
     {
+        $accessToken = $message->accessToken ?? $this->access_key;
+
         if (empty($message->originator)) {
             $message->setOriginator(config('services.messagebird.originator'));
         }
@@ -44,7 +46,7 @@ class MessagebirdClient
             $response = $this->client->request('POST', 'https://rest.messagebird.com/messages', [
                 'body' => $message->toJson(),
                 'headers' => [
-                    'Authorization' => 'AccessKey '.$this->access_key,
+                    'Authorization' => 'AccessKey '.$accessToken,
                 ],
             ]);
 

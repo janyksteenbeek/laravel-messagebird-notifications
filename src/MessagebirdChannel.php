@@ -39,6 +39,11 @@ class MessagebirdChannel
         }
 
         if ($to = $notifiable->routeNotificationFor('messagebird', $notification)) {
+            if($to instanceof MessagebirdRoute) {
+                $message->setAccessToken($to->token);
+                $message->setOriginator($to->originator);
+                $message->setRecipients($to->recipients);
+            }
             $message->setRecipients($to);
         }
 
