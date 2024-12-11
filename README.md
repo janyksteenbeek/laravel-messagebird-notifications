@@ -17,6 +17,7 @@ This package makes it easy to send [Messagebird SMS notifications](https://githu
 - [Installation](#installation)
 - [Setting up your Messagebird account](#setting-up-your-messagebird-account)
 - [Usage](#usage)
+- [Dynamic Configuration](#dynamic-configuration)
 - [Changelog](#changelog)
 - [Testing](#testing)
 - [Security](#security)
@@ -110,6 +111,61 @@ In order to handle a status report you can also set a reference
 ``` php
 return (new MessagebirdMessage("Your {$notifiable->service} was ordered!"))->setReference($id);
 ```
+
+### Using MessagebirdRoute
+
+You can use `MessagebirdRoute` to specify custom recipients, access token, and originator for a specific notification:
+
+```php
+use NotificationChannels\Messagebird\MessagebirdRoute;
+
+public function routeNotificationForMessagebird()
+{
+    return MessagebirdRoute::make(
+        recipients: ['+31612345678', '+31687654321'],
+        token: 'custom-access-token',       // optional
+        originator: 'CustomSender'          // optional
+    );
+}
+```
+
+This allows you to:
+- Send to multiple recipients
+- Use a different access token than your default configuration
+- Use a different originator (sender ID) for specific notifications
+
+### Using Routes
+
+You can also use Laravel's Route facade to send notifications to specific numbers:
+
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::notification('+31612345678', new VpsServerOrdered($vps));
+```
+
+This allows you to quickly send a notification to a specific phone number without creating a notifiable entity.
+
+## Dynamic Configuration
+
+You can also set the access token and originator dynamically at runtime using the `MessagebirdConfig` class:
+
+```php
+use NotificationChannels\Messagebird\MessagebirdConfig;
+
+// Set a custom access token
+MessagebirdConfig::setAccessKey('your-dynamic-access-key');
+
+// Set a custom originator
+MessagebirdConfig::setOriginator('CustomSender');
+
+// Or set both at once
+MessagebirdConfig::configure('your-dynamic-access-key', 'CustomSender');
+
+// Your notification code here...
+```
+
+This is useful when you need to switch between different MessageBird accounts or senders within your application.
 
 ## Changelog
 
